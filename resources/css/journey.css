@@ -1,0 +1,456 @@
+.journey-nav-link {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.65rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(234, 244, 244, 0.82);
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.journey-nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.journey-nav-chip {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(234, 244, 244, 0.22);
+    border-radius: 0.65rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(234, 244, 244, 0.9);
+}
+
+.has-journey-hero {
+    background: #050505;
+}
+
+.has-journey-hero footer {
+    margin-top: 0;
+}
+
+.journey {
+    --journey-black: #050505;
+    --journey-gold: #d6b77a;
+    --journey-ice: #eaf4f4;
+    --journey-silver: #bfc8cc;
+    --journey-intro-opacity: 1;
+    --journey-world-opacity: 0;
+    position: relative;
+    background: var(--journey-black);
+    color: var(--journey-ice);
+    margin-top: -4rem;
+}
+
+.journey-sticky {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.journey-track {
+    height: 480vh;
+    pointer-events: none;
+}
+
+.journey-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.journey-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 50% 45%, transparent 28%, rgba(5, 5, 5, 0.55) 100%),
+        linear-gradient(180deg, rgba(5, 5, 5, 0.35), transparent 28%, transparent 68%, rgba(5, 5, 5, 0.55));
+}
+
+.journey-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    background: #050505;
+    transition: opacity 0.9s ease;
+    pointer-events: none;
+}
+
+.journey-loader.is-gone {
+    opacity: 0;
+}
+
+.journey-loader span {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #d6b77a;
+    animation: journey-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes journey-pulse {
+    50% {
+        transform: scale(0.45);
+        opacity: 0.4;
+    }
+}
+
+.journey-fallback,
+.journey-fallback-cosmos,
+.journey-fallback-veil {
+    position: absolute;
+    inset: 0;
+}
+
+.journey-fallback-cosmos {
+    background:
+        radial-gradient(ellipse at 50% 40%, rgba(214, 183, 122, 0.35), transparent 42%),
+        radial-gradient(ellipse at 30% 70%, rgba(110, 200, 255, 0.12), transparent 40%),
+        radial-gradient(ellipse at 70% 30%, rgba(127, 212, 224, 0.1), transparent 35%),
+        linear-gradient(180deg, #050505, #0a1218 55%, #15100a);
+    animation: journey-cosmos 18s ease-in-out infinite alternate;
+}
+
+@keyframes journey-cosmos {
+    from {
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    to {
+        filter: hue-rotate(18deg) brightness(1.08);
+    }
+}
+
+.journey-fallback-veil {
+    background:
+        linear-gradient(180deg, rgba(5, 5, 5, 0.25), rgba(5, 5, 5, 0.72)),
+        radial-gradient(ellipse at 50% 40%, transparent 20%, rgba(5, 5, 5, 0.5) 80%);
+}
+
+.journey-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: clamp(5.5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 3rem) clamp(1.5rem, 4vh, 2.5rem);
+    pointer-events: none;
+}
+
+.journey-intro,
+.journey-world-copy,
+.journey-actions a,
+.journey-actions button,
+.journey-hint,
+.journey-dots,
+.journey-audio {
+    pointer-events: auto;
+}
+
+.journey-intro {
+    align-self: end;
+    max-width: 42rem;
+    opacity: var(--journey-intro-opacity);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.journey-kicker {
+    margin: 0 0 0.85rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--journey-gold);
+}
+
+.journey-title {
+    margin: 0;
+    font-family: Manrope, 'IBM Plex Sans Arabic', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-wrap: balance;
+    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+.journey-lede {
+    margin: 1.1rem 0 0;
+    max-width: 34rem;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.75;
+    color: rgba(234, 244, 244, 0.82);
+}
+
+.journey-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+}
+
+.journey-cta-primary,
+.journey-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.85rem;
+    padding: 0.7rem 1.35rem;
+    border-radius: 0.65rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.journey-cta-primary {
+    background: var(--journey-gold);
+    color: #1a1408;
+}
+
+.journey-cta-primary:hover {
+    transform: translateY(-1px);
+    background: #e2c792;
+}
+
+.journey-cta-secondary {
+    border: 1px solid rgba(234, 244, 244, 0.28);
+    color: var(--journey-ice);
+    background: rgba(5, 5, 5, 0.28);
+    backdrop-filter: blur(8px);
+}
+
+.journey-cta-secondary:hover {
+    border-color: rgba(234, 244, 244, 0.55);
+}
+
+.journey-world-copy {
+    position: absolute;
+    inset-inline-end: clamp(1.25rem, 4vw, 3rem);
+    top: clamp(5.5rem, 12vh, 8rem);
+    max-width: 18rem;
+    text-align: end;
+    opacity: var(--journey-world-opacity);
+    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[dir='rtl'] .journey-world-copy {
+    text-align: start;
+}
+
+.journey-world-name {
+    margin: 0;
+    font-family: Manrope, 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--journey-gold);
+}
+
+.journey-world-line {
+    margin: 0.55rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba(234, 244, 244, 0.78);
+}
+
+.journey-dots {
+    position: absolute;
+    inset-inline-start: clamp(1.25rem, 4vw, 3rem);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.journey-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    padding: 0;
+    border: 1px solid rgba(234, 244, 244, 0.45);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.journey-dot:hover,
+.journey-dot:focus-visible {
+    border-color: var(--journey-gold);
+    outline: none;
+}
+
+.journey-dot.is-active {
+    background: var(--journey-gold);
+    border-color: var(--journey-gold);
+    transform: scale(1.35);
+}
+
+.journey-audio {
+    position: absolute;
+    inset-inline-end: clamp(1.25rem, 4vw, 3rem);
+    bottom: clamp(2.4rem, 5vh, 3.2rem);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(234, 244, 244, 0.28);
+    background: rgba(5, 5, 5, 0.35);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.journey-audio:hover,
+.journey-audio:focus-visible {
+    border-color: rgba(214, 183, 122, 0.7);
+    outline: none;
+}
+
+.journey-audio-icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 2px;
+    background:
+        linear-gradient(90deg, transparent 35%, currentColor 35% 45%, transparent 45% 55%, currentColor 55% 65%, transparent 65%),
+        currentColor;
+    color: rgba(234, 244, 244, 0.85);
+    clip-path: polygon(0 35%, 35% 35%, 70% 10%, 70% 90%, 35% 65%, 0 65%);
+    opacity: 0.55;
+}
+
+.journey-audio[data-state='on'] .journey-audio-icon {
+    opacity: 1;
+    color: var(--journey-gold);
+}
+
+.journey-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 1.4rem;
+    transform: translateX(-50%);
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: rgba(234, 244, 244, 0.7);
+    transition: opacity 0.4s ease;
+}
+
+.journey-hint.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.journey-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.journey-progress span {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--journey-gold), #fff);
+    transition: width 0.05s linear;
+}
+
+.journey.is-fallback .journey-intro {
+    opacity: 1 !important;
+}
+
+.journey[data-world='peace'] .journey-title,
+.journey[data-world='peace'] .journey-lede,
+.journey[data-world='peace'] .journey-world-line {
+    color: #1a2836;
+    text-shadow: none;
+}
+
+.journey[data-world='peace'] .journey-kicker,
+.journey[data-world='peace'] .journey-world-name {
+    color: #8a6d3a;
+}
+
+.journey[data-world='peace'] .journey-cta-secondary {
+    color: #1a2836;
+    border-color: rgba(26, 40, 54, 0.25);
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.journey[data-world='peace'] .journey-hint {
+    color: rgba(26, 40, 54, 0.65);
+}
+
+.journey[data-world='peace'] .journey-dot {
+    border-color: rgba(26, 40, 54, 0.35);
+}
+
+.journey[data-world='peace'] .journey-dot.is-active {
+    background: #8a6d3a;
+    border-color: #8a6d3a;
+}
+
+.journey[data-world='peace'] .journey-audio {
+    border-color: rgba(26, 40, 54, 0.25);
+    background: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+    .journey-world-copy {
+        top: auto;
+        bottom: 4.5rem;
+        inset-inline: clamp(1.25rem, 4vw, 3rem);
+        max-width: none;
+        text-align: start;
+    }
+
+    .journey-dots {
+        top: auto;
+        bottom: 4.8rem;
+        transform: none;
+        flex-direction: row;
+        inset-inline: clamp(1.25rem, 4vw, 3rem);
+        right: auto;
+    }
+
+    .journey-track {
+        height: 400vh;
+    }
+
+    .journey-title {
+        font-size: clamp(2rem, 9vw, 2.8rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .journey-track {
+        height: 100vh;
+    }
+
+    .journey-hint {
+        display: none;
+    }
+
+    .journey-loader span,
+    .journey-fallback-cosmos {
+        animation: none;
+    }
+}

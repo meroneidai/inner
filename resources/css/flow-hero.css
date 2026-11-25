@@ -1,0 +1,394 @@
+/* InnerPath flow hero — video + liquid glass, brand palette */
+
+.has-flow-hero {
+    background: #050505;
+}
+
+.has-flow-hero footer {
+    margin-top: 0;
+}
+
+.has-flow-hero > header {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+.ip-flow-hero {
+    --flow-gold: #d6b77a;
+    --flow-ice: #eaf4f4;
+    --flow-ink: #1a1408;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+    height: 100vh;
+    height: 100svh;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    margin-top: -4rem;
+    color: var(--flow-ice);
+    font-family: Manrope, 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.ip-flow-hero-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ip-flow-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(180deg, rgba(5, 5, 5, 0.45) 0%, rgba(5, 5, 5, 0.18) 35%, rgba(5, 5, 5, 0.55) 100%),
+        radial-gradient(ellipse at 50% 20%, rgba(214, 183, 122, 0.12), transparent 55%);
+}
+
+.ip-flow-hero-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+.ip-flow-petals {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.ip-flow-petal {
+    position: absolute;
+    width: 10px;
+    height: 14px;
+    border-radius: 80% 0 80% 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 250, 240, 0.85), rgba(214, 183, 122, 0.35));
+    left: calc(8% + (var(--i) * 11%));
+    top: 110%;
+    opacity: 0.55;
+    filter: blur(0.2px);
+    animation: ip-petal-drift calc(14s + var(--i) * 1.6s) linear infinite;
+    animation-delay: calc(var(--i) * -1.8s);
+}
+
+@keyframes ip-petal-drift {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.7);
+        opacity: 0;
+    }
+    8% {
+        opacity: 0.65;
+    }
+    100% {
+        transform: translate3d(calc(var(--i) * 12px - 40px), -120vh, 0) rotate(320deg) scale(1.1);
+        opacity: 0;
+    }
+}
+
+.ip-flow-hero-body {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+    padding: 5.5rem clamp(1.25rem, 4vw, 4rem) 5.5rem;
+    box-sizing: border-box;
+}
+
+.ip-flow-hero-copy {
+    width: 100%;
+    max-width: 48rem;
+    text-align: center;
+    margin-block: auto;
+}
+
+.ip-flow-kicker {
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--flow-gold);
+}
+
+.ip-flow-title {
+    margin: 0;
+    font-size: clamp(2.15rem, 6.5vw, 4.6rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-wrap: balance;
+}
+
+.ip-flow-dim {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.ip-flow-word {
+    display: inline-block;
+    min-width: 4ch;
+    color: var(--flow-gold);
+    transition: opacity 0.35s var(--ip-ease, ease), transform 0.35s var(--ip-ease, ease);
+}
+
+.ip-flow-word.is-swap {
+    opacity: 0;
+    transform: translateY(0.35em);
+}
+
+.ip-flow-lede {
+    margin: 1.75rem auto 0;
+    max-width: 28rem;
+    font-size: clamp(0.95rem, 1.6vw, 1.125rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.ip-flow-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem 1rem;
+    margin-top: 1.75rem;
+}
+
+.ip-flow-cta-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.85rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--flow-ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.ip-flow-cta-solid:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+}
+
+.ip-flow-cta-glass {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.85rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.ip-flow-cta-glass:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.liquid-glass {
+    background: rgba(255, 255, 255, 0.01);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.45) 0%,
+        rgba(255, 255, 255, 0.15) 20%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0.15) 80%,
+        rgba(214, 183, 122, 0.45) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.ip-flow-corner {
+    position: absolute;
+    z-index: 4;
+    inset-inline-end: clamp(1.25rem, 4vw, 3rem);
+    bottom: clamp(1.25rem, 4vh, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.ip-flow-corner i {
+    width: 1px;
+    height: 1.4rem;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.ip-flow-sound {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border: none;
+    border-radius: 999px;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(4px);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ip-flow-sound:hover,
+.ip-flow-sound:focus-visible {
+    background: rgba(214, 183, 122, 0.2);
+    color: var(--flow-gold);
+    outline: none;
+}
+
+.ip-flow-sound[aria-pressed='true'] {
+    color: var(--flow-gold);
+}
+
+/* Homepage header over video */
+.has-flow-hero .journey-nav-link {
+    color: rgba(234, 244, 244, 0.88);
+}
+
+.has-flow-hero .journey-nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.has-flow-hero .journey-nav-chip {
+    border-color: rgba(234, 244, 244, 0.28);
+    color: rgba(234, 244, 244, 0.92);
+}
+
+.has-flow-hero .journey-cta-primary {
+    background: #fff;
+    color: #1a1408;
+}
+
+.has-flow-hero .journey-cta-primary:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+@media (min-width: 768px) {
+    .ip-flow-hero-body {
+        align-items: flex-start;
+        padding-top: clamp(6.5rem, 14vh, 8.5rem);
+        padding-bottom: 5rem;
+    }
+
+    .ip-flow-hero-copy {
+        margin-block: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    .ip-flow-hero-body {
+        align-items: center;
+        justify-content: center;
+        padding: 4.75rem 1.25rem 5.25rem;
+    }
+
+    .ip-flow-hero-copy {
+        margin-block: auto;
+        transform: translateY(-2vh);
+    }
+
+    .ip-flow-title {
+        font-size: clamp(1.85rem, 8.5vw, 2.6rem);
+    }
+
+    .ip-flow-lede {
+        margin-top: 1.15rem;
+        font-size: 0.95rem;
+        max-width: 22rem;
+    }
+
+    .ip-flow-actions {
+        margin-top: 1.25rem;
+        gap: 0.65rem;
+    }
+
+    .ip-flow-cta-solid,
+    .ip-flow-cta-glass {
+        min-height: 2.65rem;
+        padding: 0.65rem 1.2rem;
+        font-size: 0.875rem;
+    }
+
+    .ip-flow-corner {
+        inset-inline: 1rem;
+        bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+        justify-content: center;
+        font-size: 0.62rem;
+        gap: 0.65rem;
+    }
+
+    .ip-flow-corner span {
+        max-width: 12rem;
+        text-align: center;
+        line-height: 1.35;
+    }
+}
+
+@supports (height: 100dvh) {
+    .ip-flow-hero {
+        height: 100dvh;
+        min-height: 100dvh;
+        max-height: 100dvh;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ip-flow-petal {
+        animation: none;
+        opacity: 0;
+    }
+
+    .ip-flow-word {
+        transition: none;
+    }
+}

@@ -1,0 +1,443 @@
+@import './journey.css';@import './flow-hero.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --ip-bg: #f8f8f5;
+    --ip-bg-soft: #f1f1ec;
+    --ip-surface: #ffffff;
+    --ip-surface-subtle: #f5f5f1;
+    --ip-primary: #777a91;
+    --ip-primary-dark: #55596f;
+    --ip-primary-soft: #e9eaf0;
+    --ip-sage: #9aae9d;
+    --ip-sage-soft: #eaf0e9;
+    --ip-sand: #d8cbb8;
+    --ip-beige: #f1ebe2;
+    --ip-ink: #30332f;
+    --ip-ink-secondary: #73766f;
+    --ip-ink-muted: #969990;
+    --ip-line: #e8e9e3;
+    --ip-line-strong: #dadcd4;
+    --ip-radius-control: 10px;
+    --ip-radius-card: 14px;
+    --ip-radius-section: 18px;
+    --ip-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        @apply bg-canvas font-sans text-ink antialiased;
+        min-height: 100dvh;
+        color: var(--ip-ink);
+        background-color: var(--ip-bg);
+    }
+
+    [dir='rtl'] body {
+        font-family: 'IBM Plex Sans Arabic', Manrope, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    [dir='ltr'] body {
+        font-family: Manrope, 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+    }
+
+    ::selection {
+        background: rgba(119, 122, 145, 0.18);
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-display text-balance text-ink;
+    }
+
+    p {
+        @apply text-pretty;
+    }
+}
+
+@layer components {
+    .ip-shell {
+        @apply min-h-dvh lg:grid lg:grid-cols-[15rem_minmax(0,1fr)];
+    }
+
+    .ip-sidebar {
+        @apply sticky top-0 hidden h-dvh flex-col border-e border-line bg-surface px-3 py-5 lg:flex;
+    }
+
+    .ip-main {
+        @apply min-w-0 bg-canvas pb-24 lg:pb-10;
+    }
+
+    .ip-container {
+        @apply mx-auto w-full max-w-content px-5 sm:px-6 lg:px-8;
+    }
+
+    .ip-reading {
+        @apply mx-auto w-full max-w-reading;
+    }
+
+    .ip-topbar {
+        @apply sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur-sm lg:hidden;
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .ip-bottom-nav {
+        @apply fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur-sm lg:hidden;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .ip-card {
+        @apply rounded-card border border-line bg-surface;
+    }
+
+    .ip-card-hover {
+        @apply transition duration-150;
+    }
+
+    .ip-card-hover:hover {
+        @apply border-line-strong;
+    }
+
+    .ip-panel {
+        @apply rounded-section border border-line bg-surface-subtle p-2 sm:p-3;
+    }
+
+    .ip-btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-control bg-primary px-5 py-2.5 text-sm font-semibold text-white transition duration-150;
+    }
+
+    .ip-btn:hover {
+        @apply bg-primary-dark;
+    }
+
+    .ip-btn:focus-visible {
+        @apply outline-none ring-2 ring-primary/30 ring-offset-2 ring-offset-canvas;
+    }
+
+    .ip-btn:disabled,
+    .ip-btn.is-loading {
+        @apply cursor-not-allowed opacity-55;
+    }
+
+    .ip-btn:active:not(:disabled) {
+        transform: scale(0.98);
+    }
+
+    .ip-btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-control border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-ink transition duration-150 hover:bg-canvas-soft;
+    }
+
+    .ip-btn-secondary:focus-visible {
+        @apply outline-none ring-2 ring-primary/25 ring-offset-2 ring-offset-canvas;
+    }
+
+    .ip-btn-ghost,
+    .ip-btn-text {
+        @apply inline-flex items-center justify-center gap-2 rounded-control px-3 py-2 text-sm font-medium text-ink-secondary transition hover:bg-canvas-soft hover:text-ink;
+    }
+
+    .ip-btn-accent {
+        @apply ip-btn bg-sage hover:bg-sage-dark;
+    }
+
+    .ip-input {
+        @apply w-full rounded-control border-0 bg-surface px-4 py-3 text-ink shadow-none ring-1 ring-line placeholder:text-ink-muted focus:ring-2 focus:ring-primary/25;
+        min-height: 2.85rem;
+    }
+
+    .ip-label {
+        @apply mb-1.5 block text-sm font-medium text-ink-secondary;
+    }
+
+    /* Floating labels — Infobric/InnerPath form fields */
+    .ip-float {
+        position: relative;
+        width: 100%;
+    }
+
+    .ip-float-control {
+        min-height: 3.25rem;
+        padding-block: 1.15rem 0.65rem;
+        caret-color: var(--ip-primary-dark);
+    }
+
+    .ip-float-control::placeholder {
+        color: transparent;
+    }
+
+    .ip-float-label {
+        position: absolute;
+        inset-inline-start: 0.95rem;
+        top: 50%;
+        z-index: 1;
+        max-width: calc(100% - 1.9rem);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-inline: 0.2rem;
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 500;
+        line-height: 1.2;
+        color: var(--ip-ink-muted);
+        background: transparent;
+        pointer-events: none;
+        transform: translateY(-50%);
+        transform-origin: inset-inline-start center;
+        transition:
+            top 0.22s var(--ip-ease),
+            transform 0.22s var(--ip-ease),
+            font-size 0.22s var(--ip-ease),
+            color 0.22s var(--ip-ease),
+            background-color 0.22s var(--ip-ease),
+            padding 0.22s var(--ip-ease);
+    }
+
+    .ip-float:focus-within .ip-float-label,
+    .ip-float:has(.ip-float-control:not(:placeholder-shown)) .ip-float-label,
+    .ip-float:has(.ip-float-control:autofill) .ip-float-label,
+    .ip-float--always .ip-float-label {
+        top: 0;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: var(--ip-primary-dark);
+        background: var(--ip-surface);
+        padding-inline: 0.35rem;
+        transform: translateY(-50%);
+    }
+
+    .ip-float:focus-within .ip-float-control {
+        @apply ring-2 ring-primary/25;
+    }
+
+    .ip-float--textarea .ip-float-control {
+        min-height: 7rem;
+        padding-top: 1.35rem;
+        resize: vertical;
+    }
+
+    .ip-float--always select.ip-float-control {
+        padding-block: 1.15rem 0.65rem;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2373766f' d='M1.1 1.1 6 6l4.9-4.9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 1rem center;
+    }
+
+    [dir='rtl'] .ip-float--always select.ip-float-control {
+        background-position: right 1rem center;
+    }
+
+    .ip-float--textarea .ip-float-label {
+        top: 1.15rem;
+        transform: translateY(0);
+    }
+
+    .ip-float--textarea:focus-within .ip-float-label,
+    .ip-float--textarea:has(.ip-float-control:not(:placeholder-shown)) .ip-float-label {
+        top: 0;
+        transform: translateY(-50%);
+    }
+
+    @media (max-width: 640px) {
+        .ip-float-control {
+            min-height: 3.1rem;
+            font-size: 1rem; /* avoid iOS zoom on focus */
+        }
+
+        .ip-float-label {
+            font-size: 0.92rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ip-float-label {
+            transition: none;
+        }
+    }
+
+    .ip-section-title {
+        @apply font-display text-h2 text-ink;
+    }
+
+    .ip-muted {
+        @apply text-sm leading-relaxed text-ink-secondary;
+    }
+
+    .ip-chip {
+        @apply inline-flex items-center gap-1.5 rounded-control border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-secondary;
+    }
+
+    .ip-chip-joy {
+        @apply ip-chip transition hover:border-line-strong hover:text-ink;
+    }
+
+    .ip-emoji,
+    .ip-icon-box {
+        @apply inline-flex size-10 shrink-0 items-center justify-center rounded-control border border-line bg-surface text-primary;
+    }
+
+    .ip-stat {
+        @apply ip-card space-y-1 p-5;
+    }
+
+    .ip-nav-item {
+        @apply flex items-center gap-3 rounded-control px-3 py-2.5 text-sm font-medium text-ink-secondary transition hover:bg-canvas-soft hover:text-ink;
+    }
+
+    .ip-nav-item-active {
+        @apply bg-primary-soft text-primary-dark hover:bg-primary-soft hover:text-primary-dark;
+    }
+
+    .ip-bottom-item {
+        @apply flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-medium text-ink-muted;
+    }
+
+    .ip-bottom-item-active {
+        @apply text-primary-dark;
+    }
+
+    .ip-care-card {
+        @apply rounded-card border border-line bg-surface p-5;
+    }
+
+    .ip-care-warm,
+    .ip-care-love,
+    .ip-care-celebrate,
+    .ip-care-confidence {
+        @apply border-line bg-beige/60;
+    }
+
+    .ip-care-calm,
+    .ip-care-support {
+        @apply border-line bg-sage-soft;
+    }
+
+    .ip-choice {
+        @apply inline-flex cursor-pointer items-center gap-2 rounded-control border border-line bg-surface px-3 py-2.5 text-sm font-medium text-ink transition hover:border-line-strong;
+    }
+
+    .ip-choice-active {
+        @apply border-primary/40 bg-primary-soft text-primary-dark;
+    }
+
+    .ip-hero {
+        @apply relative overflow-hidden rounded-section border border-line bg-primary-soft p-6 sm:p-8;
+    }
+
+    .ip-hero-public {
+        @apply relative overflow-hidden rounded-section bg-canvas-soft;
+    }
+
+    .ip-visual {
+        @apply border border-line bg-canvas-soft shadow-soft;
+    }
+
+    .ip-visual-img {
+        @apply block;
+    }
+
+    .ip-atmosphere {
+        background-image:
+            radial-gradient(ellipse 80% 60% at 15% 0%, rgba(234, 240, 233, 0.9), transparent 55%),
+            radial-gradient(ellipse 70% 50% at 90% 20%, rgba(241, 235, 226, 0.75), transparent 50%),
+            radial-gradient(ellipse 50% 40% at 50% 100%, rgba(233, 234, 240, 0.45), transparent 55%);
+    }
+
+    .ip-page-hero {
+        @apply relative overflow-hidden;
+    }
+
+    .ip-page-hero-media {
+        @apply absolute inset-0;
+    }
+
+    .ip-page-hero-media img {
+        @apply size-full object-cover;
+    }
+
+    .ip-page-hero-veil {
+        @apply absolute inset-0;
+        background:
+            linear-gradient(180deg, rgba(248, 248, 245, 0.55) 0%, rgba(248, 248, 245, 0.82) 45%, rgba(248, 248, 245, 0.97) 100%),
+            linear-gradient(90deg, rgba(248, 248, 245, 0.75) 0%, transparent 55%);
+    }
+
+    [dir='ltr'] .ip-page-hero-veil {
+        background:
+            linear-gradient(180deg, rgba(248, 248, 245, 0.55) 0%, rgba(248, 248, 245, 0.82) 45%, rgba(248, 248, 245, 0.97) 100%),
+            linear-gradient(270deg, rgba(248, 248, 245, 0.75) 0%, transparent 55%);
+    }
+
+    .ip-quote {
+        @apply font-display text-h3 leading-relaxed text-ink;
+    }
+
+    .ip-fade-up {
+        animation: ip-fade-up 0.9s var(--ip-ease) both;
+    }
+
+    .ip-fade-up-delay {
+        animation: ip-fade-up 1s var(--ip-ease) 0.12s both;
+    }
+
+    .ip-empty {
+        @apply ip-card px-6 py-14 text-center;
+    }
+
+    .ip-prose-calm {
+        @apply max-w-reading text-base leading-[1.8] text-ink-secondary;
+    }
+
+    .ip-status {
+        @apply rounded-card border border-line bg-sage-soft px-4 py-3 text-sm text-ink;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+}
+
+@layer utilities {
+    .text-balance { text-wrap: balance; }
+    .text-pretty { text-wrap: pretty; }
+    .min-h-dvh { min-height: 100dvh; }
+    .h-dvh { height: 100dvh; }
+}
+
+@keyframes ip-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

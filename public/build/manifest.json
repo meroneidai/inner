@@ -1,0 +1,35 @@
+{
+  "_gsap-BZVPcu9T.js": {
+    "file": "assets/gsap-BZVPcu9T.js",
+    "name": "gsap"
+  },
+  "_three-D4RvKs5n.js": {
+    "file": "assets/three-D4RvKs5n.js",
+    "name": "three"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-B_Tp_eDO.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-COuGLd5P.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/journey/boot.js": {
+    "file": "assets/boot-6Geb75UY.js",
+    "name": "boot",
+    "src": "resources/js/journey/boot.js",
+    "isEntry": true,
+    "imports": [
+      "_three-D4RvKs5n.js",
+      "_gsap-BZVPcu9T.js"
+    ]
+  }
+}

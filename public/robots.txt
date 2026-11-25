@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /dreams
+Disallow: /analyses
+Disallow: /conversations
+Disallow: /growth
+Disallow: /reflections
+Disallow: /reports
+Disallow: /notifications
+Disallow: /settings
+Disallow: /profile
+Disallow: /onboarding
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /confirm-password
+
+Sitemap: /sitemap.xml
