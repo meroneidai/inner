@@ -1,5 +1,9 @@
 /* InnerPath flow hero — video + liquid glass, brand palette */
 
+[x-cloak] {
+    display: none !important;
+}
+
 .has-flow-hero {
     background: #050505;
 }
@@ -24,15 +28,15 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-height: 100vh;
-    min-height: 100svh;
-    min-height: 100dvh;
     height: 100vh;
     height: 100svh;
     height: 100dvh;
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    margin-top: -4rem;
+    margin: 0;
     color: var(--flow-ice);
     font-family: Manrope, 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -265,6 +269,7 @@
 }
 
 .ip-flow-sound {
+    position: relative;
     display: grid;
     place-items: center;
     width: 2.35rem;
@@ -277,6 +282,12 @@
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(4px);
     transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ip-flow-sound-icon {
+    display: grid;
+    place-items: center;
+    grid-area: 1 / 1;
 }
 
 .ip-flow-sound:hover,
@@ -361,6 +372,11 @@
         text-align: center;
         line-height: 1.35;
     }
+}
+
+.has-flow-hero main {
+    padding: 0;
+    margin: 0;
 }
 
 @supports (height: 100dvh) {

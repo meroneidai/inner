@@ -4,20 +4,15 @@ import Chart from 'chart.js/auto';
 window.Alpine = Alpine;
 window.Chart = Chart;
 
-Alpine.data('innerPathFlowHero', (words = []) => ({
+Alpine.data('innerPathFlowHero', (words = [], musicSrc = '/audio/inspiration-ambient.mp3') => ({
     words: Array.isArray(words) && words.length ? words : ['universe'],
     wordIndex: 0,
     word: '',
-    soundOn: false,
+    soundOn: true,
     music: null,
-    ctx: null,
-    master: null,
-    musicSource: null,
     wordTimer: null,
-    fadeTimer: null,
-    lastPetalSound: 0,
-    // CC0 ambient bed (AERIS MUSIC — Quiet Room), served locally for reliability.
-    musicSrc: '/audio/inspiration-ambient.mp3',
+    musicSrc,
+    unlockBound: null,
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 
     init() {
@@ -26,6 +21,10 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
             this.wordTimer = window.setInterval(() => this.cycleWord(), 2800);
         }
         this.$refs.video?.play?.().catch(() => {});
+        this.startMusic();
+        this.unlockBound = () => this.startMusic();
+        window.addEventListener('pointerdown', this.unlockBound, { once: true });
+        window.addEventListener('keydown', this.unlockBound, { once: true });
     },
 
     cycleWord() {
@@ -39,38 +38,18 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
     },
 
     async toggleSound() {
-        if (!this.soundOn) {
-            await this.startAudio();
-            this.soundOn = true;
-        } else {
-            this.stopAudio();
+        if (this.soundOn) {
+            this.pauseMusic();
             this.soundOn = false;
+            return;
         }
+
+        this.soundOn = true;
+        await this.startMusic();
     },
 
-    async ensureAudioGraph() {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) {
-            return false;
-        }
-
-        if (!this.ctx) {
-            this.ctx = new AudioCtx();
-            this.master = this.ctx.createGain();
-            this.master.gain.value = 1;
-            this.master.connect(this.ctx.destination);
-        }
-
-        if (this.ctx.state === 'suspended') {
-            await this.ctx.resume();
-        }
-
-        return true;
-    },
-
-    async startAudio() {
-        const ok = await this.ensureAudioGraph();
-        if (!ok) {
+    async startMusic() {
+        if (!this.soundOn) {
             return;
         }
 
@@ -78,101 +57,33 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
             this.music = new Audio(this.musicSrc);
             this.music.loop = true;
             this.music.preload = 'auto';
-            this.music.crossOrigin = 'anonymous';
-            this.music.volume = 0;
-
-            try {
-                this.musicSource = this.ctx.createMediaElementSource(this.music);
-                const musicGain = this.ctx.createGain();
-                musicGain.gain.value = 0.72;
-                this.musicSource.connect(musicGain);
-                musicGain.connect(this.master);
-                this.musicGain = musicGain;
-            } catch {
-                // Fallback: element → speakers if MediaElementSource already linked
-                this.musicSource = null;
-            }
+            this.music.volume = 0.55;
         }
 
         try {
             await this.music.play();
-        } catch (error) {
-            console.warn('Ambient music failed to play', error);
-            return;
+        } catch {
+            // Autoplay blocked until a user gesture — unlockBound handles that.
         }
-
-        this.fadeMusic(0.42, 900);
     },
 
-    fadeMusic(target, ms = 700) {
-        if (!this.music) {
-            return;
+    pauseMusic() {
+        try {
+            this.music?.pause();
+        } catch {
+            // ignore
         }
-        if (this.fadeTimer) {
-            window.clearInterval(this.fadeTimer);
-        }
-        const start = this.music.volume;
-        const steps = Math.max(1, Math.round(ms / 40));
-        let step = 0;
-        this.fadeTimer = window.setInterval(() => {
-            step += 1;
-            const t = step / steps;
-            this.music.volume = start + (target - start) * t;
-            if (step >= steps) {
-                window.clearInterval(this.fadeTimer);
-                this.fadeTimer = null;
-                this.music.volume = target;
-                if (target <= 0.001) {
-                    this.music.pause();
-                }
-            }
-        }, 40);
-    },
-
-    /** Soft chime when a petal drifts — layered over the ambient track. */
-    onPetalMotion() {
-        if (!this.soundOn || !this.ctx || !this.master) {
-            return;
-        }
-        const now = performance.now();
-        if (now - this.lastPetalSound < 520) {
-            return;
-        }
-        this.lastPetalSound = now;
-
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const freqs = [523.25, 587.33, 659.25, 698.46, 783.99];
-        osc.type = 'sine';
-        osc.frequency.value = freqs[Math.floor(Math.random() * freqs.length)];
-        gain.gain.value = 0;
-        osc.connect(gain);
-        gain.connect(this.master);
-        gain.gain.setValueAtTime(0, t);
-        gain.gain.linearRampToValueAtTime(0.03, t + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
-        osc.start(t);
-        osc.stop(t + 0.75);
-    },
-
-    stopAudio() {
-        this.fadeMusic(0, 500);
     },
 
     destroy() {
         if (this.wordTimer) {
             window.clearInterval(this.wordTimer);
         }
-        if (this.fadeTimer) {
-            window.clearInterval(this.fadeTimer);
+        if (this.unlockBound) {
+            window.removeEventListener('pointerdown', this.unlockBound);
+            window.removeEventListener('keydown', this.unlockBound);
         }
-        try {
-            this.music?.pause();
-        } catch {
-            // ignore
-        }
-        this.ctx?.close?.();
+        this.pauseMusic();
     },
 }));
 

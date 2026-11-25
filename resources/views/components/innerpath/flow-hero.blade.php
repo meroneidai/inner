@@ -5,13 +5,14 @@
     $words = $isArabic
         ? ['الكون', 'السلام', 'النور', 'الجوهر', 'الوضوح', 'الحرية']
         : ['universe', 'stillness', 'light', 'essence', 'clarity', 'freedom'];
+    $musicUrl = asset('audio/inspiration-ambient.mp3');
 @endphp
 
 <section
     class="ip-flow-hero"
     data-flow-hero
     aria-label="{{ __('الكون الذي بداخلك') }}"
-    x-data="innerPathFlowHero(@js($words))"
+    x-data="innerPathFlowHero(@js($words), @js($musicUrl))"
     x-init="init()"
 >
     <video
@@ -30,14 +31,9 @@
     <div class="ip-flow-hero-overlay" aria-hidden="true"></div>
     <div class="ip-flow-hero-veil" aria-hidden="true"></div>
 
-    {{-- Soft floating petals (motion triggers flower sounds) --}}
     <div class="ip-flow-petals" aria-hidden="true">
         @for ($i = 0; $i < 8; $i++)
-            <span
-                class="ip-flow-petal"
-                style="--i: {{ $i }}"
-                @animationiteration="onPetalMotion()"
-            ></span>
+            <span class="ip-flow-petal" style="--i: {{ $i }}"></span>
         @endfor
     </div>
 
@@ -91,8 +87,12 @@
             :aria-label="soundOn ? '{{ $isArabic ? 'كتم الصوت' : 'Mute sound' }}' : '{{ $isArabic ? 'تشغيل الصوت' : 'Play sound' }}'"
             :title="soundOn ? '{{ $isArabic ? 'كتم الصوت' : 'Mute sound' }}' : '{{ $isArabic ? 'تشغيل الصوت' : 'Play sound' }}'"
         >
-            <x-lucide-volume-2 class="size-5" x-show="soundOn" x-cloak />
-            <x-lucide-volume-x class="size-5" x-show="!soundOn" />
+            <span class="ip-flow-sound-icon" x-show="soundOn" x-cloak>
+                <x-lucide-volume-2 class="size-5" />
+            </span>
+            <span class="ip-flow-sound-icon" x-show="!soundOn">
+                <x-lucide-volume-x class="size-5" />
+            </span>
         </button>
     </div>
 </section>
