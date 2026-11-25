@@ -1,4 +1,15 @@
+DirectoryIndex index.php public/index.php
+
+<FilesMatch "\.(php4|php5|php3|php2|php|phtml)$">
+    SetHandler application/x-lsphp84
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(.*)$ public/$1 [L]
+    # Keep real public assets reachable
+    RewriteRule ^public/(.*)$ public/$1 [L]
+    # Front controller for everything else
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
 </IfModule>
