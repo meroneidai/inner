@@ -1,30 +1,58 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+    <div class="mb-6 text-center">
+        <h1 class="font-display text-h3 text-ink">{{ __('تأكيد البريد') }}</h1>
+        <p class="ip-muted mt-1">
+            {{ __('أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى') }}
+            <span class="font-medium text-ink">{{ auth()->user()->email }}</span>
+        </p>
     </div>
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+    @if (session('status') === 'verification-code-sent')
+        <div class="mb-4 rounded-control bg-sage-soft px-4 py-3 text-sm text-ink">
+            {{ __('تم إرسال رمز تأكيد جديد إلى بريدك.') }}
         </div>
     @endif
 
-    <div class="mt-4 flex items-center justify-between">
+    <x-auth-session-status class="mb-4" :status="session('status') === 'verification-code-sent' ? null : session('status')" />
+
+    <form method="POST" action="{{ route('verification.verify') }}" class="space-y-4">
+        @csrf
+
+        <div>
+            <x-text-input
+                id="code"
+                type="text"
+                name="code"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                maxlength="6"
+                autocomplete="one-time-code"
+                :label="__('رمز التأكيد')"
+                :value="old('code')"
+                required
+                autofocus
+                class="tracking-[0.35em] text-center text-lg"
+            />
+            <x-input-error :messages="$errors->get('code')" class="mt-2" />
+        </div>
+
+        <x-primary-button class="w-full">
+            {{ __('تفعيل الحساب والدخول') }}
+        </x-primary-button>
+    </form>
+
+    <div class="mt-6 flex flex-col items-center gap-3 text-sm">
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
-            </div>
+            <button type="submit" class="font-medium text-primary-dark hover:underline">
+                {{ __('إعادة إرسال الرمز') }}
+            </button>
         </form>
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
+            <button type="submit" class="text-ink-secondary hover:text-ink">
+                {{ __('تسجيل الخروج') }}
             </button>
         </form>
     </div>

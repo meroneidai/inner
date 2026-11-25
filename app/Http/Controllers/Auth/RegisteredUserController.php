@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Profile\ProfileConsentService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -60,7 +61,7 @@ class RegisteredUserController extends Controller
             'daily_care_hour' => 8,
             'daily_reminder_hour' => 20,
         ]);
-        app(\App\Services\Profile\ProfileConsentService::class)->ensureDefaults($user);
+        app(ProfileConsentService::class)->ensureDefaults($user);
 
         // Easy signup: mark onboarding skippable; user can enrich profile later for better analysis.
         $user->update(['onboarding_completed_at' => now()]);
@@ -69,7 +70,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false))
-            ->with('status', __('تم إنشاء حسابك. يمكنك تسجيل الأحلام فوراً — وإكمال ملفك الداخلي لاحقاً لتحليل أدق.'));
+        return redirect()
+            ->route('verification.notice')
+            ->with('status', __('أدخل رمز التأكيد المرسل إلى بريدك لتفعيل حسابك.'));
     }
 }

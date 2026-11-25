@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Auth\EmailVerificationCodeService;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,16 +30,26 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verification_code',
     ];
 
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'email_verification_code_expires_at' => 'datetime',
             'onboarding_completed_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Send a 6-digit verification code instead of a signed link.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        app(EmailVerificationCodeService::class)->issue($this);
     }
 
     public function isAdmin(): bool
