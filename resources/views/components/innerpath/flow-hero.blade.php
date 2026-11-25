@@ -12,8 +12,7 @@
     class="ip-flow-hero"
     data-flow-hero
     aria-label="{{ __('الكون الذي بداخلك') }}"
-    x-data="innerPathFlowHero(@js($words), @js($musicUrl))"
-    x-init="init()"
+    x-data="innerPathFlowHero(@js($words))"
 >
     <video
         class="ip-flow-hero-video"
@@ -21,12 +20,21 @@
         muted
         loop
         playsinline
-        preload="metadata"
+        webkit-playsinline
+        preload="auto"
         poster="{{ asset('images/journey/hero-poster.jpg') }}"
         x-ref="video"
     >
         <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260703_053131_1ec3dd1c-d627-44fb-ab20-6e1fce41b0d5.mp4" type="video/mp4">
     </video>
+
+    <audio
+        x-ref="music"
+        src="{{ $musicUrl }}"
+        loop
+        preload="auto"
+        playsinline
+    ></audio>
 
     <div class="ip-flow-hero-overlay" aria-hidden="true"></div>
     <div class="ip-flow-hero-veil" aria-hidden="true"></div>
@@ -82,7 +90,7 @@
         <button
             type="button"
             class="ip-flow-sound"
-            @click="toggleSound()"
+            @click.stop="toggleSound()"
             :aria-pressed="soundOn.toString()"
             :aria-label="soundOn ? '{{ $isArabic ? 'كتم الصوت' : 'Mute sound' }}' : '{{ $isArabic ? 'تشغيل الصوت' : 'Play sound' }}'"
             :title="soundOn ? '{{ $isArabic ? 'كتم الصوت' : 'Mute sound' }}' : '{{ $isArabic ? 'تشغيل الصوت' : 'Play sound' }}'"

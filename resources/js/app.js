@@ -4,27 +4,41 @@ import Chart from 'chart.js/auto';
 window.Alpine = Alpine;
 window.Chart = Chart;
 
-Alpine.data('innerPathFlowHero', (words = [], musicSrc = '/audio/inspiration-ambient.mp3') => ({
+Alpine.data('innerPathFlowHero', (words = []) => ({
     words: Array.isArray(words) && words.length ? words : ['universe'],
     wordIndex: 0,
     word: '',
     soundOn: true,
-    music: null,
     wordTimer: null,
-    musicSrc,
     unlockBound: null,
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 
     init() {
         this.word = this.words[0];
+
         if (!this.reducedMotion) {
             this.wordTimer = window.setInterval(() => this.cycleWord(), 2800);
         }
-        this.$refs.video?.play?.().catch(() => {});
+
+        this.ensureVideoPlaying();
         this.startMusic();
-        this.unlockBound = () => this.startMusic();
+
+        this.unlockBound = () => {
+            this.ensureVideoPlaying();
+            this.startMusic();
+        };
+
         window.addEventListener('pointerdown', this.unlockBound, { once: true });
+        window.addEventListener('touchstart', this.unlockBound, { once: true, passive: true });
         window.addEventListener('keydown', this.unlockBound, { once: true });
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                this.ensureVideoPlaying();
+                if (this.soundOn) {
+                    this.startMusic();
+                }
+            }
+        });
     },
 
     cycleWord() {
@@ -37,7 +51,27 @@ Alpine.data('innerPathFlowHero', (words = [], musicSrc = '/audio/inspiration-amb
         }, 280);
     },
 
+    ensureVideoPlaying() {
+        const video = this.$refs.video;
+        if (!video) {
+            return;
+        }
+
+        video.muted = true;
+        video.playsInline = true;
+        video.play?.().catch(() => {});
+    },
+
     async toggleSound() {
+        const audio = this.$refs.music;
+        const playing = audio && !audio.paused;
+
+        // If UI says "on" but autoplay was blocked, first click starts audio.
+        if (this.soundOn && !playing) {
+            await this.startMusic();
+            return;
+        }
+
         if (this.soundOn) {
             this.pauseMusic();
             this.soundOn = false;
@@ -53,23 +87,29 @@ Alpine.data('innerPathFlowHero', (words = [], musicSrc = '/audio/inspiration-amb
             return;
         }
 
-        if (!this.music) {
-            this.music = new Audio(this.musicSrc);
-            this.music.loop = true;
-            this.music.preload = 'auto';
-            this.music.volume = 0.55;
+        const audio = this.$refs.music;
+        if (!audio) {
+            return;
         }
 
+        audio.loop = true;
+        audio.volume = 0.55;
+
         try {
-            await this.music.play();
+            await audio.play();
         } catch {
-            // Autoplay blocked until a user gesture — unlockBound handles that.
+            // Autoplay blocked until a gesture — unlockBound / mute button retries.
         }
     },
 
     pauseMusic() {
+        const audio = this.$refs.music;
+        if (!audio) {
+            return;
+        }
+
         try {
-            this.music?.pause();
+            audio.pause();
         } catch {
             // ignore
         }
@@ -81,6 +121,7 @@ Alpine.data('innerPathFlowHero', (words = [], musicSrc = '/audio/inspiration-amb
         }
         if (this.unlockBound) {
             window.removeEventListener('pointerdown', this.unlockBound);
+            window.removeEventListener('touchstart', this.unlockBound);
             window.removeEventListener('keydown', this.unlockBound);
         }
         this.pauseMusic();
