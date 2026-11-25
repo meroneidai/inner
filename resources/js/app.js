@@ -23,14 +23,27 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
         this.ensureVideoPlaying();
         this.startMusic();
 
-        this.unlockBound = () => {
+        this.unlockBound = (event) => {
+            // Mute button has its own handler; a global unlock on the same
+            // pointerdown would start audio and then the click would mute it.
+            if (event?.target?.closest?.('.ip-flow-sound')) {
+                return;
+            }
+
             this.ensureVideoPlaying();
-            this.startMusic();
+            if (this.soundOn) {
+                this.startMusic();
+            }
+
+            window.removeEventListener('pointerdown', this.unlockBound);
+            window.removeEventListener('touchstart', this.unlockBound);
+            window.removeEventListener('keydown', this.unlockBound);
+            this.unlockBound = null;
         };
 
-        window.addEventListener('pointerdown', this.unlockBound, { once: true });
-        window.addEventListener('touchstart', this.unlockBound, { once: true, passive: true });
-        window.addEventListener('keydown', this.unlockBound, { once: true });
+        window.addEventListener('pointerdown', this.unlockBound);
+        window.addEventListener('touchstart', this.unlockBound, { passive: true });
+        window.addEventListener('keydown', this.unlockBound);
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 this.ensureVideoPlaying();
