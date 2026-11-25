@@ -117,6 +117,7 @@
     max-width: 48rem;
     text-align: center;
     margin-block: auto;
+    transform: translateY(-2vh);
 }
 
 .ip-flow-kicker {
@@ -311,18 +312,6 @@
 
 .has-flow-hero .journey-cta-primary:hover {
     background: rgba(255, 255, 255, 0.9);
-}
-
-@media (min-width: 768px) {
-    .ip-flow-hero-body {
-        align-items: flex-start;
-        padding-top: clamp(6.5rem, 14vh, 8.5rem);
-        padding-bottom: 5rem;
-    }
-
-    .ip-flow-hero-copy {
-        margin-block: 0;
-    }
 }
 
 @media (max-width: 767px) {
