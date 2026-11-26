@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class EmailVerificationNotificationController extends Controller
 {
     /**
-     * Send a new email verification code.
+     * Invalidate the previous code and email a fresh OTP.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -17,8 +17,11 @@ class EmailVerificationNotificationController extends Controller
             return redirect()->intended(route('dashboard', absolute: false));
         }
 
+        // Always issue a new hashed code — previous OTP becomes invalid.
         $request->user()->sendEmailVerificationNotification();
 
-        return back()->with('status', 'verification-code-sent');
+        return redirect()
+            ->route('verification.notice')
+            ->with('status', 'verification-code-sent');
     }
 }

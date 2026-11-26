@@ -70,13 +70,43 @@ class EmailVerificationTest extends TestCase
         Notification::fake();
 
         $user = User::factory()->unverified()->create();
+        $oldCode = '111222';
+
+        $user->forceFill([
+            'email_verification_code' => Hash::make($oldCode),
+            'email_verification_code_expires_at' => now()->addMinutes(30),
+        ])->save();
+        $previousHash = $user->email_verification_code;
 
         $response = $this->actingAs($user)->post(route('verification.send'));
 
-        $response->assertRedirect();
+        $response->assertRedirect(route('verification.notice', absolute: false));
         $response->assertSessionHas('status', 'verification-code-sent');
         Notification::assertSentTo($user, EmailVerificationCodeNotification::class);
-        $this->assertNotNull($user->fresh()->email_verification_code);
+
+        $user->refresh();
+        $this->assertNotNull($user->email_verification_code);
+        $this->assertNotSame($previousHash, $user->email_verification_code);
+        $this->assertTrue($user->email_verification_code_expires_at->isFuture());
+
+        // Previous OTP must no longer work after reset.
+        $this->actingAs($user)
+            ->from(route('verification.notice'))
+            ->post(route('verification.verify'), ['code' => $oldCode])
+            ->assertSessionHasErrors('code');
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_verification_screen_renders_six_digit_fields(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $response = $this->actingAs($user)->get('/verify-email');
+
+        $response->assertOk();
+        $response->assertSee('otpCodeInput', false);
+        $response->assertSee('ip-otp-digit', false);
+        $response->assertSee('name="code"', false);
     }
 
     public function test_expired_code_is_rejected(): void

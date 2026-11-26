@@ -169,6 +169,101 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
     },
 }));
 
+Alpine.data('otpCodeInput', (length = 6, initial = '') => ({
+    length,
+    digits: Array.from({ length }, (_, index) => {
+        const value = String(initial || '');
+
+        return /^\d$/.test(value[index] ?? '') ? value[index] : '';
+    }),
+    submitting: false,
+
+    get code() {
+        return this.digits.join('');
+    },
+
+    get isComplete() {
+        return this.code.length === this.length && /^\d+$/.test(this.code);
+    },
+
+    init() {
+        this.$nextTick(() => this.focusIndex(this.digits.findIndex((digit) => digit === '') || 0));
+    },
+
+    focusIndex(index) {
+        const clamped = Math.max(0, Math.min(this.length - 1, index));
+        this.$refs[`digit${clamped}`]?.focus();
+        this.$refs[`digit${clamped}`]?.select?.();
+    },
+
+    onInput(index, event) {
+        const raw = String(event.target.value ?? '').replace(/\D/g, '');
+        const digit = raw.slice(-1);
+        this.digits[index] = digit;
+        event.target.value = digit;
+
+        if (digit && index < this.length - 1) {
+            this.focusIndex(index + 1);
+        }
+
+        if (this.isComplete) {
+            this.submitIfReady();
+        }
+    },
+
+    onKeydown(index, event) {
+        if (event.key === 'Backspace') {
+            if (this.digits[index]) {
+                this.digits[index] = '';
+                return;
+            }
+
+            if (index > 0) {
+                this.digits[index - 1] = '';
+                this.focusIndex(index - 1);
+            }
+            return;
+        }
+
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            this.focusIndex(index - 1);
+        }
+
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            this.focusIndex(index + 1);
+        }
+    },
+
+    onPaste(event) {
+        event.preventDefault();
+        const pasted = String(event.clipboardData?.getData('text') ?? '').replace(/\D/g, '').slice(0, this.length);
+        if (!pasted) {
+            return;
+        }
+
+        for (let i = 0; i < this.length; i += 1) {
+            this.digits[i] = pasted[i] ?? '';
+        }
+
+        this.focusIndex(Math.min(pasted.length, this.length - 1));
+
+        if (this.isComplete) {
+            this.submitIfReady();
+        }
+    },
+
+    submitIfReady() {
+        if (!this.isComplete || this.submitting) {
+            return;
+        }
+
+        this.submitting = true;
+        this.$nextTick(() => this.$refs.form?.requestSubmit());
+    },
+}));
+
 Alpine.data('voiceRecorder', () => ({
     recording: false,
     mediaRecorder: null,
