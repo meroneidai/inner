@@ -85,7 +85,7 @@
     </div>
 
     <div class="ip-flow-corner">
-        <span>{{ $isArabic ? 'شاهد الزهور تتنفس' : 'Watch the flowers breathe' }}</span>
+        <span x-text="soundOn ? '{{ $isArabic ? 'الصوت يعمل' : 'Sound on' }}' : '{{ $isArabic ? 'اضغط لتشغيل الصوت' : 'Tap to play sound' }}'"></span>
         <i></i>
         <button
             type="button"

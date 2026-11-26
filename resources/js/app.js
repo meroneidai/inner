@@ -8,7 +8,8 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
     words: Array.isArray(words) && words.length ? words : ['universe'],
     wordIndex: 0,
     word: '',
-    soundOn: true,
+    // Start false so the icon shows "play" when browsers block autoplay.
+    soundOn: false,
     wordTimer: null,
     unlockBound: null,
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -20,25 +21,32 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
             this.wordTimer = window.setInterval(() => this.cycleWord(), 2800);
         }
 
+        const audio = this.$refs.music;
+        if (audio) {
+            audio.loop = true;
+            audio.volume = 0.7;
+            audio.addEventListener('play', () => {
+                this.soundOn = true;
+            });
+            audio.addEventListener('pause', () => {
+                // Only mark off if we intentionally paused / autoplay never started.
+                if (audio.currentTime === 0 || audio.ended) {
+                    this.soundOn = false;
+                }
+            });
+        }
+
         this.ensureVideoPlaying();
-        this.startMusic();
+        this.tryAutoplayMusic();
 
         this.unlockBound = (event) => {
-            // Mute button has its own handler; a global unlock on the same
-            // pointerdown would start audio and then the click would mute it.
             if (event?.target?.closest?.('.ip-flow-sound')) {
                 return;
             }
 
             this.ensureVideoPlaying();
-            if (this.soundOn) {
-                this.startMusic();
-            }
-
-            window.removeEventListener('pointerdown', this.unlockBound);
-            window.removeEventListener('touchstart', this.unlockBound);
-            window.removeEventListener('keydown', this.unlockBound);
-            this.unlockBound = null;
+            this.enableMusicFromGesture();
+            this.clearUnlockListeners();
         };
 
         window.addEventListener('pointerdown', this.unlockBound);
@@ -52,6 +60,17 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
                 }
             }
         });
+    },
+
+    clearUnlockListeners() {
+        if (!this.unlockBound) {
+            return;
+        }
+
+        window.removeEventListener('pointerdown', this.unlockBound);
+        window.removeEventListener('touchstart', this.unlockBound);
+        window.removeEventListener('keydown', this.unlockBound);
+        this.unlockBound = null;
     },
 
     cycleWord() {
@@ -75,43 +94,56 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
         video.play?.().catch(() => {});
     },
 
-    async toggleSound() {
-        const audio = this.$refs.music;
-        const playing = audio && !audio.paused;
-
-        // If UI says "on" but autoplay was blocked, first click starts audio.
-        if (this.soundOn && !playing) {
-            await this.startMusic();
-            return;
-        }
-
-        if (this.soundOn) {
-            this.pauseMusic();
-            this.soundOn = false;
-            return;
-        }
-
-        this.soundOn = true;
-        await this.startMusic();
-    },
-
-    async startMusic() {
-        if (!this.soundOn) {
-            return;
-        }
-
+    async tryAutoplayMusic() {
         const audio = this.$refs.music;
         if (!audio) {
             return;
         }
 
+        try {
+            await audio.play();
+            this.soundOn = true;
+            this.clearUnlockListeners();
+        } catch {
+            this.soundOn = false;
+        }
+    },
+
+    async enableMusicFromGesture() {
+        this.soundOn = true;
+        await this.startMusic();
+    },
+
+    async toggleSound() {
+        const audio = this.$refs.music;
+        const playing = Boolean(audio && !audio.paused);
+
+        if (playing) {
+            this.pauseMusic();
+            this.soundOn = false;
+            return;
+        }
+
+        this.clearUnlockListeners();
+        await this.enableMusicFromGesture();
+    },
+
+    async startMusic() {
+        const audio = this.$refs.music;
+        if (!audio) {
+            return false;
+        }
+
         audio.loop = true;
-        audio.volume = 0.55;
+        audio.volume = 0.7;
 
         try {
             await audio.play();
+            this.soundOn = true;
+            return true;
         } catch {
-            // Autoplay blocked until a gesture — unlockBound / mute button retries.
+            this.soundOn = false;
+            return false;
         }
     },
 
@@ -132,11 +164,7 @@ Alpine.data('innerPathFlowHero', (words = []) => ({
         if (this.wordTimer) {
             window.clearInterval(this.wordTimer);
         }
-        if (this.unlockBound) {
-            window.removeEventListener('pointerdown', this.unlockBound);
-            window.removeEventListener('touchstart', this.unlockBound);
-            window.removeEventListener('keydown', this.unlockBound);
-        }
+        this.clearUnlockListeners();
         this.pauseMusic();
     },
 }));

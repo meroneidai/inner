@@ -8,7 +8,7 @@
     "name": "three"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BOKlNa3n.css",
+    "file": "assets/app-DsTErcKN.css",
     "name": "app",
     "names": [
       "app.css"
@@ -17,7 +17,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-BY4k0MZS.js",
+    "file": "assets/app-BEbbIOlG.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
